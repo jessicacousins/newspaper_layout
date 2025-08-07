@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>The Daily Herald - Today's Edition</title>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;900&family=Crimson+Text:ital,wght@0,400;0,600;1,400&family=Old+Standard+TT:ital,wght@0,400;0,700;1,400&display=swap");
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        font-family: "Crimson Text", serif;
+        background: #f4f1eb;
+        line-height: 1.4;
+        overflow-x: hidden;
+        color: #2c2c2c;
+      }
+
+      .newspaper-container {
+        max-width: 1400px;
+        margin: 20px auto;
+        background: #fefdfb;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        position: relative;
+        border: 2px solid #d4d4d4;
+      }
+
+      .newspaper-container::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: radial-gradient(
+            circle at 20% 80%,
+            rgba(120, 119, 108, 0.05) 0%,
+            transparent 50%
+          ),
+          radial-gradient(
+            circle at 80% 20%,
+            rgba(255, 255, 255, 0.8) 0%,
+            transparent 50%
+          ),
+          radial-gradient(
+            circle at 40% 40%,
+            rgba(0, 0, 0, 0.02) 0%,
+            transparent 50%
+          );
+        pointer-events: none;
+        z-index: 1;
+      }
+
+      .newspaper-header {
+        text-align: center;
+        padding: 25px 20px 20px;
+        border-bottom: 4px double #2c2c2c;
+        background: #fefdfb;
+        position: relative;
+        z-index: 2;
+      }
+
+      .masthead {
+        font-family: "Old Standard TT", serif;
+        font-size: 4.2rem;
+        font-weight: 700;
+        color: #1a1a1a;
+        letter-spacing: 3px;
+        text-shadow: 1px 1px 0px rgba(0, 0, 0, 0.1);
+        margin-bottom: 5px;
+        text-transform: uppercase;
+      }
+
+      .edition-info {
+        font-size: 0.9rem;
+        color: #666;
+        margin-bottom: 8px;
+        font-weight: 600;
+        letter-spacing: 1px;
+      }
+
+      .tagline {
+        font-size: 1rem;
+        color: #888;
+        font-style: italic;
+        margin-bottom: 12px;
+      }
+
+      .date-weather-price {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 0.85rem;
+        color: #444;
+        border-top: 1px solid #ccc;
+        padding-top: 12px;
+        font-weight: 600;
+      }
+
+      .main-layout {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr 300px;
+        gap: 20px;
+        padding: 25px;
+        position: relative;
+        z-index: 2;
+      }
+
+      .column {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+      }
+
+      .headline-banner {
+        grid-column: 1 / -1;
+        text-align: center;
+        padding: 15px 0;
+        border-top: 2px solid #2c2c2c;
+        border-bottom: 2px solid #2c2c2c;
+        margin-bottom: 15px;
+      }
+
+      .banner-headline {
+        font-family: "Playfair Display", serif;
+        font-size: 3.2rem;
+        font-weight: 900;
+        color: #1a1a1a;
+        line-height: 1.1;
+        letter-spacing: -1px;
+        text-transform: uppercase;
+        margin-bottom: 8px;
+      }
+
+      .banner-subhead {
+        font-size: 1.1rem;
+        color: #555;
+        font-style: italic;
+      }
+
+      .article {
+        border-bottom: 1px solid #ddd;
+        padding-bottom: 18px;
+        margin-bottom: 15px;
+      }
+
+      .article:last-child {
+        border-bottom: none;
+        margin-bottom: 0;
+      }
+
+      .article-headline {
+        font-family: "Playfair Display", serif;
+        font-size: 1.4rem;
+        font-weight: 700;
+        color: #2c2c2c;
+        margin-bottom: 6px;
+        line-height: 1.2;
+        cursor: pointer;
+        transition: color 0.3s ease;
+      }
+
+      .article-headline:hover {
+        color: #8b0000;
+      }
+
+      .article-byline {
+        font-size: 0.8rem;
+        color: #666;
+        margin-bottom: 8px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      .article-text {
+        font-size: 0.95rem;
+        line-height: 1.5;
+        color: #333;
+        text-align: justify;
+        hyphens: auto;
+      }
+
+      .lead-article {
+        grid-column: 1 / 3;
+      }
+
+      .lead-article .article-headline {
+        font-size: 2.2rem;
+        margin-bottom: 10px;
+      }
+
+      .lead-article .article-text {
+        font-size: 1.05rem;
+        line-height: 1.6;
+        columns: 2;
+        column-gap: 20px;
+        column-rule: 1px solid #ddd;
+        text-align: justify;
+      }
+
+      .sidebar {
+        grid-column: 4;
+        border-left: 2px solid #ccc;
+        padding-left: 20px;
+      }
+
+      .sidebar-section {
+        margin-bottom: 25px;
+        padding-bottom: 20px;
+        border-bottom: 1px solid #eee;
+      }
+
+      .sidebar-section:last-child {
+        border-bottom: none;
+      }
+
+      .sidebar-title {
+        font-family: "Old Standard TT", serif;
+        font-size: 1.3rem;
+        font-weight: 700;
+        color: #2c2c2c;
+        margin-bottom: 12px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        border-bottom: 2px solid #2c2c2c;
+        padding-bottom: 4px;
+      }
+
+      .weather-box {
+        background: #f8f8f8;
+        border: 2px solid #ccc;
+        padding: 15px;
+        text-align: center;
+      }
+
+      .weather-temp {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #2c2c2c;
+        margin-bottom: 5px;
+      }
+
+      .weather-desc {
+        font-size: 0.9rem;
+        color: #555;
+        margin-bottom: 8px;
+      }
+
+      .weather-detail {
+        font-size: 0.8rem;
+        color: #666;
+        font-style: italic;
+      }
+
+      .classified-ad {
+        background: #f9f9f9;
+        border: 2px dashed #999;
+        padding: 15px;
+        text-align: center;
+      }
+
+      .ad-headline {
+        font-family: "Old Standard TT", serif;
+        font-size: 1.2rem;
+        font-weight: 700;
+        color: #2c2c2c;
+        margin-bottom: 8px;
+        text-transform: uppercase;
+      }
+
+      .ad-text {
+        font-size: 0.85rem;
+        color: #555;
+        line-height: 1.4;
+      }
+
+      .stock-ticker {
+        background: #2c2c2c;
+        color: #fff;
+        padding: 8px 0;
+        font-size: 0.8rem;
+        white-space: nowrap;
+        overflow: hidden;
+      }
+
+      .ticker-content {
+        display: inline-block;
+        animation: scroll-ticker 45s linear infinite;
+        padding-left: 100%;
+      }
+
+      @keyframes scroll-ticker {
+        0% {
+          transform: translateX(0);
+        }
+        100% {
+          transform: translateX(-100%);
+        }
+      }
+
+      .photo-placeholder {
+        width: 100%;
+        height: 180px;
+        background: #e8e8e8;
+        border: 2px solid #ccc;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 10px 0;
+        font-size: 0.8rem;
+        color: #666;
+        font-style: italic;
+      }
+
+      .loading {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100px;
+        font-size: 1rem;
+        color: #666;
+      }
+
+      .spinner {
+        width: 30px;
+        height: 30px;
+        border: 3px solid #ddd;
+        border-top: 3px solid #666;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin-right: 10px;
+      }
+
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      .fade-in-section {
+        opacity: 0;
+        transform: translateY(20px);
+        transition: all 0.6s ease-out;
+      }
+
+      .fade-in-section.visible {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      @media (max-width: 1200px) {
+        .main-layout {
+          grid-template-columns: 1fr 1fr 300px;
+        }
+
+        .lead-article {
+          grid-column: 1 / 3;
+        }
+      }
+
+      @media (max-width: 900px) {
+        .masthead {
+          font-size: 2.8rem;
+          letter-spacing: 1px;
+        }
+
+        .banner-headline {
+          font-size: 2.2rem;
+        }
+
+        .main-layout {
+          grid-template-columns: 1fr;
+          gap: 15px;
+          padding: 20px;
+        }
+
+        .lead-article {
+          grid-column: 1;
+        }
+
+        .lead-article .article-text {
+          columns: 1;
+        }
+
+        .sidebar {
+          border-left: none;
+          border-top: 2px solid #ccc;
+          padding-left: 0;
+          padding-top: 20px;
+        }
+      }
+
+      @media (max-width: 600px) {
+        .date-weather-price {
+          flex-direction: column;
+          gap: 8px;
+          text-align: center;
+        }
+
+        .newspaper-container {
+          margin: 10px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="newspaper-container">
+      <!-- Traditional header -->
+      <header class="newspaper-header">
+        <h1 class="masthead">The Daily Herald</h1>
+        <div class="edition-info">MORNING EDITION</div>
+        <p class="tagline">Serving Our Community Since 1923</p>
+        <div class="date-weather-price">
+          <span id="current-date">Loading...</span>
+          <span>Vol. 102, No. 186</span>
+          <span>Price: Fifteen Cents</span>
+        </div>
+      </header>
+
+      <!-- Stock ticker (fake)-->
+      <div class="stock-ticker">
+        <div class="ticker-content">
+          ★ DOW JONES 2,847.11 ↑12.3 ★ NASDAQ 847.42 ↑3.7 ★ S&P 500 312.84 ↑2.1
+          ★ GOLD $385.20 ↓1.2 ★ SILVER $5.43 ↑0.8 ★ OIL $18.65 ↑0.4 ★
+        </div>
+      </div>
+
+      <!-- Banner  -->
+      <div class="headline-banner fade-in-section">
+        <div class="loading" id="banner-loading">
+          <div class="spinner"></div>
+          Loading Today's Headlines...
+        </div>
+        <div id="banner-content" style="display: none">
+          <h2 class="banner-headline" id="banner-headline">LOADING NEWS...</h2>
+          <p class="banner-subhead" id="banner-subhead">
+            Major story developing...
+          </p>
+        </div>
+      </div>
+
+      <!-- Main Newspaper Layout -->
+      <div class="main-layout">
+        <!-- Lead story (spans 2 columns) -->
+        <article class="article lead-article fade-in-section">
+          <div class="loading" id="lead-loading">
+            <div class="spinner"></div>
+            Loading lead story...
+          </div>
+          <div id="lead-content" style="display: none">
+            <h3 class="article-headline" id="lead-headline">
+              Major Story Headline
+            </h3>
+            <div class="article-byline" id="lead-byline">By Staff Reporter</div>
+            <div class="photo-placeholder">[ PHOTOGRAPH UNAVAILABLE ]</div>
+            <p class="article-text" id="lead-text">Story content loading...</p>
+          </div>
+        </article>
+
+        <!-- Column 1 -->
+        <div class="column fade-in-section">
+          <article class="article">
+            <h3 class="article-headline">Local Business Expands Operations</h3>
+            <div class="article-byline">By Margaret Wilson • City Desk</div>
+            <p class="article-text">
+              Main Street's Johnson Hardware announced plans to expand their
+              operations with a new storefront opening next month. The
+              family-owned business has served the community for over three
+              decades.
+            </p>
+          </article>
+
+          <article class="article">
+            <h3 class="article-headline">School Board Approves Budget</h3>
+            <div class="article-byline">
+              By Robert Chen • Education Reporter
+            </div>
+            <p class="article-text">
+              The local school board unanimously approved the new budget during
+              yesterday's meeting, allocating additional funds for textbooks and
+              facility improvements.
+            </p>
+          </article>
+
+          <article class="article" id="news-item-1">
+            <div class="loading">
+              <div class="spinner"></div>
+              Loading...
+            </div>
+          </article>
+        </div>
+
+        <!-- Column 2 -->
+        <div class="column fade-in-section">
+          <article class="article">
+            <h3 class="article-headline">Community Garden Project Launched</h3>
+            <div class="article-byline">By Sarah Martinez • Community News</div>
+            <p class="article-text">
+              Citizens gathered Saturday morning to break ground on the new
+              community garden project behind the municipal building. The
+              initiative aims to provide fresh produce and educational
+              opportunities.
+            </p>
+          </article>
+
+          <article class="article">
+            <h3 class="article-headline">
+              Traffic Light Installation Complete
+            </h3>
+            <div class="article-byline">By David Thompson • City Hall</div>
+            <p class="article-text">
+              The new traffic signal at Oak Street and Main Avenue is now
+              operational, promising improved safety for pedestrians and
+              motorists in the downtown area.
+            </p>
+          </article>
+
+          <article class="article" id="news-item-2">
+            <div class="loading">
+              <div class="spinner"></div>
+              Loading...
+            </div>
+          </article>
+        </div>
+
+        <!-- Sidebar -->
+        <aside class="sidebar fade-in-section">
+          <div class="sidebar-section">
+            <h4 class="sidebar-title">Weather</h4>
+            <div class="weather-box">
+              <div class="weather-temp">72°F</div>
+              <div class="weather-desc">Partly Cloudy</div>
+              <div class="weather-detail">High: 78°F | Low: 65°F</div>
+              <div class="weather-detail">Humidity: 45%</div>
+            </div>
+          </div>
+
+          <div class="sidebar-section">
+            <h4 class="sidebar-title">Classified</h4>
+            <div class="classified-ad">
+              <div class="ad-headline">Miller's Pharmacy</div>
+              <div class="ad-text">
+                "Your Health is Our Business"<br />
+                Complete prescription service<br />
+                Corner of Elm & 3rd Street<br />
+                Phone: Madison 4-7829
+              </div>
+            </div>
+          </div>
+
+          <div class="sidebar-section">
+            <h4 class="sidebar-title">Sports</h4>
+            <article class="article">
+              <h5 class="article-headline" style="font-size: 1rem">
+                High School Team Advances
+              </h5>
+              <div class="article-byline">Sports Desk</div>
+              <p class="article-text" style="font-size: 0.85rem">
+                The Wildcats secured their spot in the regional championship
+                with a decisive 28-14 victory over the Eagles last Friday night.
+              </p>
+            </article>
+          </div>
+
+          <div class="sidebar-section">
+            <h4 class="sidebar-title">Notices</h4>
+            <div class="ad-text" style="font-size: 0.8rem; line-height: 1.3">
+              <strong>TOWN MEETING:</strong> City Council meets Tuesday 7:00 PM
+              at Municipal Building.<br /><br />
+              <strong>LIBRARY HOURS:</strong> Monday-Friday 9-8, Saturday 9-5,
+              Sunday Closed.<br /><br />
+              <strong>LOST:</strong> Small brown dog, answers to "Rex." Reward
+              offered. Call Madison 4-3821.
+            </div>
+          </div>
+        </aside>
+      </div>
+    </div>
+
+    <script>
+      function setCurrentDate() {
+        const options = {
+          weekday: "long",
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+        };
+        const today = new Date();
+        const dateStr = today.toLocaleDateString("en-US", options);
+        document.getElementById("current-date").textContent =
+          dateStr.toUpperCase();
+      }
+
+      function initScrollAnimations() {
+        const observerOptions = {
+          threshold: 0.2,
+          rootMargin: "0px 0px -50px 0px",
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add("visible");
+            }
+          });
+        }, observerOptions);
+
+        document.querySelectorAll(".fade-in-section").forEach((el) => {
+          observer.observe(el);
+        });
+      }
+
+      async function fetchNews() {
+        try {
+          const response = await fetch(
+            "https://newsapi.org/v2/top-headlines?country=us&apiKey=demo&pageSize=10"
+          );
+
+          if (!response.ok) {
+            throw new Error("API request failed");
+          }
+
+          const data = await response.json();
+
+          if (data.articles && data.articles.length > 0) {
+            displayNews(data.articles);
+          } else {
+            throw new Error("No articles found");
+          }
+        } catch (error) {
+          console.log("Using fallback news data");
+          const fallbackNews = [
+            {
+              title: "HISTORIC TRADE AGREEMENT SIGNED BY WORLD LEADERS",
+              description:
+                "In an unprecedented move, representatives from major nations gathered today to finalize a comprehensive trade agreement that economists predict will reshape international commerce for the coming decades. The signing ceremony, held at the International Commerce Center, was attended by dignitaries from over thirty countries. Secretary of Commerce Margaret Harrison called it 'a new chapter in global cooperation.' The agreement addresses tariff reductions, intellectual property protections, and establishes new frameworks for cross-border digital commerce. Industry leaders expressed optimism about the potential for job creation and economic growth.",
+              author: "Margaret Thompson",
+              publishedAt: new Date().toISOString(),
+            },
+            {
+              title: "Medical Research Breakthrough Shows Remarkable Promise",
+              description:
+                "Scientists at the National Medical Research Institute announced significant progress in treatment development that could benefit millions of patients worldwide. The research, funded by a coalition of medical foundations, represents five years of collaborative effort among leading researchers.",
+              author: "Dr. James Mitchell",
+              publishedAt: new Date().toISOString(),
+            },
+            {
+              title: "Technology Sector Reports Record Growth Numbers",
+              description:
+                "The latest quarterly economic reports reveal unprecedented expansion in the technology industry, with new companies creating thousands of employment opportunities across multiple metropolitan areas.",
+              author: "Sarah Williams",
+              publishedAt: new Date().toISOString(),
+            },
+          ];
+          displayNews(fallbackNews);
+        }
+      }
+
+      function displayNews(articles) {
+        const mainArticle = articles[0];
+        document.getElementById("banner-headline").textContent =
+          mainArticle.title.toUpperCase();
+        document.getElementById("banner-subhead").textContent =
+          "Full coverage inside • See related story on Page 3";
+
+        setTimeout(() => {
+          document.getElementById("banner-loading").style.display = "none";
+          document.getElementById("banner-content").style.display = "block";
+        }, 800);
+
+        document.getElementById("lead-headline").textContent =
+          mainArticle.title;
+        document.getElementById("lead-byline").textContent = `By ${
+          mainArticle.author || "Staff Reporter"
+        } • ${formatDate(mainArticle.publishedAt)}`;
+        document.getElementById("lead-text").textContent =
+          mainArticle.description ||
+          "This developing story continues to unfold as officials work to address the various implications and community response. Local authorities have assured residents that all necessary measures are being taken to ensure public safety and transparency throughout the process.";
+
+        setTimeout(() => {
+          document.getElementById("lead-loading").style.display = "none";
+          document.getElementById("lead-content").style.display = "block";
+        }, 1200);
+
+        if (articles.length > 1) {
+          const newsItem1 = document.getElementById("news-item-1");
+          setTimeout(() => {
+            newsItem1.innerHTML = `
+                        <h3 class="article-headline">${articles[1].title}</h3>
+                        <div class="article-byline">By ${
+                          articles[1].author || "News Staff"
+                        } • Wire Services</div>
+                        <p class="article-text">${
+                          articles[1].description ||
+                          "Continued coverage of this important story will be provided as more information becomes available."
+                        }</p>
+                    `;
+          }, 1600);
+        }
+
+        if (articles.length > 2) {
+          const newsItem2 = document.getElementById("news-item-2");
+          setTimeout(() => {
+            newsItem2.innerHTML = `
+                        <h3 class="article-headline">${articles[2].title}</h3>
+                        <div class="article-byline">By ${
+                          articles[2].author || "Correspondent"
+                        } • National Desk</div>
+                        <p class="article-text">${
+                          articles[2].description ||
+                          "This story represents part of our ongoing coverage of national developments affecting local communities."
+                        }</p>
+                    `;
+          }, 2000);
+        }
+      }
+
+      function formatDate(dateString) {
+        const date = new Date(dateString);
+        return date
+          .toLocaleDateString("en-US", {
+            month: "short",
+            day: "numeric",
+            hour: "numeric",
+            minute: "2-digit",
+            hour12: true,
+          })
+          .toUpperCase();
+      }
+
+      document.addEventListener("DOMContentLoaded", () => {
+        setCurrentDate();
+        initScrollAnimations();
+        fetchNews();
+      });
+
+      document.addEventListener("click", (e) => {
+        if (
+          e.target.classList.contains("article-headline") ||
+          e.target.classList.contains("banner-headline")
+        ) {
+          e.target.style.transform = "scale(0.99)";
+          setTimeout(() => {
+            e.target.style.transform = "";
+          }, 100);
+        }
+      });
+    </script>
+  </body>
+</html>
